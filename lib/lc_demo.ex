@@ -8,7 +8,19 @@ defmodule LcDemo do
   alias LcDemo.Monsters
   alias LcDemo.Monsters.Monster
 
-  def doc_example do
+  @doc """
+  This is taken from the LangChain docs. It searches the data in a map to answer questions.
+  Eg:
+
+     doc_example("where is the hairbrush?")
+     "The hairbrush is in the drawer."
+
+     doc_example("is the dog eating the sandwich?")
+     "The dog is in the backyard and the sandwich is in the kitchen. So, the dog is not currently eating the sandwich."
+     # OR - hey look unpredictability
+     "The dog is in the backyard and the sandwich is in the kitchen. Without any specific information on the location of the dog and the sandwich, we cannot determine if the dog is eating the sandwich."
+  """
+  def doc_example(question) do
     # map of data we want to be passed as `context` to the function when
     # executed.
     custom_context = %{
@@ -47,14 +59,23 @@ defmodule LcDemo do
         verbose: true
       })
       |> LLMChain.add_tools(custom_fn)
-      |> LLMChain.add_message(Message.new_user!("is the dog eating the sandwich?"))
+      |> LLMChain.add_message(Message.new_user!(question))
       |> LLMChain.run(mode: :while_needs_response)
 
-    # print the LLM's answer
-    IO.puts(ChainResult.to_string!(updated_chain))
-    # => "The hairbrush is located in the drawer."
+    # return the LLM's answer
+    ChainResult.to_string!(updated_chain)
   end
 
+  @doc """
+  Queries the database of seeded monster data to answer questions about known monsters.
+  Eg:
+
+     monster_query("Tell me about Bigfoot.")
+     "Bigfoot is a legendary, large, ape-like creature said to inhabit forests in North America."
+
+     monster_query("Are there any monsters in the sea?")
+     "Yes, there are several monsters associated with the sea. Here are a few examples:\n\n1. **Godzilla**\n   - Description: A massive, radioactive monster from Japan, known for rampaging through cities and battling other kaiju. Comes from the sea.\n\n2. **The Kraken**\n   - Description: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n\n3. **Giant Squid**\n   - Description: Not really a monster, but it's huge and scary. Has a giant eyeball and lives in the sea."
+  """
   def monster_query(question) when is_binary(question) do
     monster_by_name =
       Function.new!(%{
@@ -81,7 +102,7 @@ defmodule LcDemo do
     monsters_by_description =
       Function.new!(%{
         name: "monsters_by_description",
-        description: "Returns info about monsters whose description contains the term given (case insensitive)",
+        description: "Returns info about monsters whose description contains the term given (case insensitive). If nothing is found with a given search term, or if you want more results, try a synonym or related word. For example, 'sky', 'air', 'flying'.",
         parameters_schema: %{
           type: "object",
           properties: %{
@@ -113,8 +134,7 @@ defmodule LcDemo do
       |> LLMChain.add_message(Message.new_user!(question))
       |> LLMChain.run(mode: :while_needs_response)
 
-    # print the LLM's answer
-    IO.puts(ChainResult.to_string!(updated_chain))
-    # => "The hairbrush is located in the drawer."
+    # return the LLM's answer
+    ChainResult.to_string!(updated_chain)
   end
 end
