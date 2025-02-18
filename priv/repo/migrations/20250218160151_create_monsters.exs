@@ -3,8 +3,8 @@ defmodule LcDemo.Repo.Migrations.CreateMonsters do
 
   def change do
     create table(:monsters) do
-      add :name, :string
-      add :description, :string
+      add :name, :string, null: false
+      add :description, :text, null: false
 
       timestamps(type: :utc_datetime)
     end

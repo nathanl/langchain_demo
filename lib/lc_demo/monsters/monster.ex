@@ -15,4 +15,14 @@ defmodule LcDemo.Monsters.Monster do
     |> cast(attrs, [:name, :description])
     |> validate_required([:name, :description])
   end
+
+  @doc """
+  Represent the monster in a string that an LLM can understand
+  """
+  def to_llm_string(%__MODULE__{} = monster) do
+    """
+    Name: #{monster.name}
+    Description: #{monster.description}
+    """
+  end
 end

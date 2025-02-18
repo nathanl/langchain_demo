@@ -38,6 +38,43 @@ defmodule LcDemo.Monsters do
   def get_monster!(id), do: Repo.get!(Monster, id)
 
   @doc """
+  Finds a monster by name.
+
+  ## Examples
+
+      iex> fetch_monster_by_name("Dragon")
+      {:ok, %Monster{}}
+
+      iex> get_monster_by_name("NonExistent")
+      {:error, :no_such_monster}
+
+  """
+  def fetch_monster_by_name(name) do
+    Repo.get_by(Monster, name: name)
+    |> case do
+      %Monster{} = monster -> {:ok, monster}
+      _ -> {:error, :no_such_monster}
+    end
+  end
+
+  @doc """
+  Finds monsters by a term in their description (case-insensitive match).
+
+  ## Examples
+
+      iex> find_monsters_by_description("fire")
+      [%Monster{}, ...]
+
+      iex> find_monsters_by_description("unknown term")
+      []
+
+  """
+  def find_monsters_by_description(term) do
+    Repo.all(from m in Monster, where: ilike(m.description, ^"%#{term}%"))
+  end
+
+
+  @doc """
   Creates a monster.
 
   ## Examples
