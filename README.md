@@ -2,9 +2,10 @@
 
 A demo of using LangChain to let ChatGPT answer questions by calling custom functions, including database queries.
 
-## Requirements
+## Setup
 
-Set `"OPENAI_API_KEY"` env var, possibly by using `.envrc` (see `.envrc.example`).
+- Set a valid `"OPENAI_API_KEY"` env var, possibly by using `.envrc` (see `.envrc.example`).
+- `mix ecto.setup`
 
 ## Usage
 
