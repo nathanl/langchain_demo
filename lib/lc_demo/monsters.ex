@@ -58,21 +58,26 @@ defmodule LcDemo.Monsters do
   end
 
   @doc """
-  Finds monsters by a term in their description (case-insensitive match).
+  Finds monsters by a list of terms in their description (case-insensitive match).
 
   ## Examples
 
-      iex> find_monsters_by_description("fire")
+      iex> find_monsters_by_description(["fire", "water"])
       [%Monster{}, ...]
 
-      iex> find_monsters_by_description("unknown term")
+      iex> find_monsters_by_description(["unknown term", "ghost"])
       []
 
   """
-  def find_monsters_by_description(term) do
-    Repo.all(from m in Monster, where: ilike(m.description, ^"%#{term}%"))
-  end
+  def find_monsters_by_description(terms) when is_list(terms) do
+    terms = Enum.map(terms, fn term -> "%#{term}%" end)
+    query = from(m in Monster)
 
+    Enum.reduce(terms, query, fn term, query ->
+      from q in query, or_where: ilike(q.description, ^term)
+    end)
+    |> Repo.all()
+  end
 
   @doc """
   Creates a monster.

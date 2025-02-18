@@ -69,9 +69,10 @@ defmodule LcDemo do
   @doc """
   Queries the database of seeded monster data to answer questions about known monsters, by name or by description.
   If nothing is found by description, prompts the LLM to try a synonym.
+  Politely refuses to answer non-monster questions.
   Eg:
 
-     monster_query("Tell me about Bigfoot.")
+     LcDemo.monster_query("Tell me about Bigfoot.")
      "Bigfoot is a legendary, large, ape-like creature said to inhabit forests in North America."
 
      LcDemo.monster_query("Are there any monsters that live in the sea?")
@@ -82,6 +83,9 @@ defmodule LcDemo do
 
      LcDemo.monster_query("Are there any monsters that live in lava?")
      "It seems that there are no monsters specifically mentioned to live in lava or volcanoes. Would you like to search for monsters in a different habitat or with a different characteristic?"
+
+     LcDemo.monster_query("Why are so many farm animals ungulates?")
+     "I'm a monster expert, and I specialize in providing information about monsters. If you have any questions related to monsters or creatures, feel free to ask, and I'll be happy to help!"
   """
   def monster_query(question) when is_binary(question) do
     monster_by_name =
@@ -109,23 +113,31 @@ defmodule LcDemo do
     monsters_by_description =
       Function.new!(%{
         name: "monsters_by_description",
-        description: "Returns info about monsters whose description contains the term given (case insensitive). If nothing is found with a given search term, or if you want more results, try a synonym or related word. For example, 'sky', 'air', 'flying'.",
+        description: """
+        Returns info about monsters whose description contains any of the terms given (case insensitive).
+        Searching with several synonyms yields the most complete results.
+        """,
         parameters_schema: %{
           type: "object",
           properties: %{
-            search_term: %{
-              type: "string",
-              description: "A substring that can be found in the monster's description"
+            search_terms: %{
+              type: "array",
+              description: "A list of substrings that can be found in the monster's description",
+              items: %{
+                type: "string"
+              }
             }
           },
-          required: ["search_term"]
+          required: ["search_terms"]
         },
-        function: fn %{"search_term" => term} = _arguments, _context ->
-          case Monsters.find_monsters_by_description(term) do
+        function: fn %{"search_terms" => terms} = _arguments, _context ->
+          case Monsters.find_monsters_by_description(terms) do
             [_h | _t] = matches ->
               {:ok, Enum.map(matches, &Monster.to_llm_string/1) |> Enum.join("\n\n")}
 
-            [] -> {:error, "No monsters matching this term were found, but a synonym might find something"}
+            [] ->
+              {:error,
+               "No monsters matching any of the terms were found; try again with a different set of terms"}
           end
         end
       })
@@ -134,18 +146,18 @@ defmodule LcDemo do
     {:ok, updated_chain} =
       LLMChain.new!(%{
         llm: ChatOpenAI.new!(),
-        verbose: true,
-        messages: [LangChain.Message.new_system!(
-          """
-          You are a helpful assistant who responds to queries about monsters.
-          Do not answer questions about anything else.
-          Don't speculate when you can't find any information.
-          """
-        )]
+        verbose: true
       })
       |> LLMChain.add_tools(monster_by_name)
       |> LLMChain.add_tools(monsters_by_description)
-      |> LLMChain.add_message(Message.new_user!(question))
+      |> LLMChain.add_messages([
+        Message.new_system!("""
+          You are a helpful assistant who responds to questions about monsters.
+          If you get an unrelated question, politely decline to answer.
+        """),
+        Message.new_user!(question)
+      ])
+      # |> LLMChain.add_message(Message.new_user!(question))
       |> LLMChain.run(mode: :while_needs_response)
 
     # return the LLM's answer
