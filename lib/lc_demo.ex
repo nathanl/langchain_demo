@@ -67,14 +67,18 @@ defmodule LcDemo do
   end
 
   @doc """
-  Queries the database of seeded monster data to answer questions about known monsters.
+  Queries the database of seeded monster data to answer questions about known monsters, by name or by description.
+  If nothing is found by description, prompts the LLM to try a synonym.
   Eg:
 
      monster_query("Tell me about Bigfoot.")
      "Bigfoot is a legendary, large, ape-like creature said to inhabit forests in North America."
 
-     monster_query("Are there any monsters in the sea?")
-     "Yes, there are several monsters associated with the sea. Here are a few examples:\n\n1. **Godzilla**\n   - Description: A massive, radioactive monster from Japan, known for rampaging through cities and battling other kaiju. Comes from the sea.\n\n2. **The Kraken**\n   - Description: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n\n3. **Giant Squid**\n   - Description: Not really a monster, but it's huge and scary. Has a giant eyeball and lives in the sea."
+     LcDemo.monster_query("Are there any monsters that live in the sea?")
+     "Here are some monsters that live in the sea:\n\n1. **Godzilla**: A massive, radioactive monster from Japan, known for rampaging through cities and battling other kaiju. Comes from the sea.\n\n2. **The Kraken**: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n\n3. **Giant Squid**: Although not considered a traditional monster, the giant squid is huge and scary. It has a giant eyeball and lives in the sea."
+
+     LcDemo.monster_query("Are there any monsters that live in salt water?")
+     "I found two monsters related to the ocean:\n\n1. **The Kraken**: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n2. **Jellyfishatron**: A robot jellyfish who terrorizes all ocean visitors with its incessant humming.\n\nThese monsters have a connection to the ocean."
   """
   def monster_query(question) when is_binary(question) do
     monster_by_name =
@@ -118,7 +122,7 @@ defmodule LcDemo do
             [_h | _t] = matches ->
               {:ok, Enum.map(matches, &Monster.to_llm_string/1) |> Enum.join("\n\n")}
 
-            [] -> {:error, "No monsters matching this term were found"}
+            [] -> {:error, "No monsters matching this term were found, but a synonym might find something"}
           end
         end
       })
