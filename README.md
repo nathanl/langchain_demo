@@ -1,18 +1,12 @@
 # LcDemo
 
-To start your Phoenix server:
+A demo of using LangChain to let ChatGPT answer questions by calling custom functions, including database queries.
+See `LcDemo.doc_example/1` and `LcDemo.monster_query/1`.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Requirements
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Set `"OPENAI_API_KEY"` env var.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## TODO
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- Ensure that the LLM will not answer questions unrelated to our subject matter. (It seems to be ignoring the prompt about that.)

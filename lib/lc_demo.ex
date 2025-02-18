@@ -79,6 +79,9 @@ defmodule LcDemo do
 
      LcDemo.monster_query("Are there any monsters that live in salt water?")
      "I found two monsters related to the ocean:\n\n1. **The Kraken**: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n2. **Jellyfishatron**: A robot jellyfish who terrorizes all ocean visitors with its incessant humming.\n\nThese monsters have a connection to the ocean."
+
+     LcDemo.monster_query("Are there any monsters that live in lava?")
+     "It seems that there are no monsters specifically mentioned to live in lava or volcanoes. Would you like to search for monsters in a different habitat or with a different characteristic?"
   """
   def monster_query(question) when is_binary(question) do
     monster_by_name =
@@ -131,7 +134,14 @@ defmodule LcDemo do
     {:ok, updated_chain} =
       LLMChain.new!(%{
         llm: ChatOpenAI.new!(),
-        verbose: true
+        verbose: true,
+        messages: [LangChain.Message.new_system!(
+          """
+          You are a helpful assistant who responds to queries about monsters.
+          Do not answer questions about anything else.
+          Don't speculate when you can't find any information.
+          """
+        )]
       })
       |> LLMChain.add_tools(monster_by_name)
       |> LLMChain.add_tools(monsters_by_description)
