@@ -76,10 +76,10 @@ defmodule LcDemo do
      "Bigfoot is a legendary, large, ape-like creature said to inhabit forests in North America."
 
      LcDemo.monster_query("Are there any monsters that live in the sea?")
-     "Here are some monsters that live in the sea:\n\n1. **Godzilla**: A massive, radioactive monster from Japan, known for rampaging through cities and battling other kaiju. Comes from the sea.\n\n2. **The Kraken**: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n\n3. **Giant Squid**: Although not considered a traditional monster, the giant squid is huge and scary. It has a giant eyeball and lives in the sea."
+     "Here are some monsters that live in the sea:\n1. Godzilla: A massive, radioactive monster from Japan that comes from the sea and is known for rampaging through cities.\n2. The Kraken: A legendary sea monster that is said to drag ships and sailors into the depths of the ocean.\n3. Giant Squid: A huge and scary creature with a giant eyeball that lives in the sea.\n4. Jellyfishatron: A robot jellyfish that terrorizes ocean visitors with its incessant humming."
 
      LcDemo.monster_query("Are there any monsters that live in salt water?")
-     "I found two monsters related to the ocean:\n\n1. **The Kraken**: A legendary sea monster said to drag ships and sailors into the depths of the ocean.\n2. **Jellyfishatron**: A robot jellyfish who terrorizes all ocean visitors with its incessant humming.\n\nThese monsters have a connection to the ocean."
+     "Yes, there are several monsters that live in salt water or the sea. Some of them include Godzilla, The Kraken, Giant Squid, and Jellyfishatron."
 
      LcDemo.monster_query("Are there any monsters that live in lava?")
      "It seems that there are no monsters specifically mentioned to live in lava or volcanoes. Would you like to search for monsters in a different habitat or with a different characteristic?"
