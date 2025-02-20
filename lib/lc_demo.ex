@@ -55,8 +55,8 @@ defmodule LcDemo do
     {:ok, updated_chain} =
       LLMChain.new!(%{
         llm: ChatOpenAI.new!(),
-        custom_context: custom_context,
-        verbose: true
+        custom_context: custom_context
+        # verbose: true
       })
       |> LLMChain.add_tools(custom_fn)
       |> LLMChain.add_message(Message.new_user!(question))
@@ -145,8 +145,8 @@ defmodule LcDemo do
     # create and run the chain
     {:ok, updated_chain} =
       LLMChain.new!(%{
-        llm: ChatOpenAI.new!(),
-        verbose: true
+        llm: ChatOpenAI.new!()
+        # verbose: true
       })
       |> LLMChain.add_tools(monster_by_name)
       |> LLMChain.add_tools(monsters_by_description)
@@ -158,6 +158,56 @@ defmodule LcDemo do
         Message.new_user!(question)
       ])
       # |> LLMChain.add_message(Message.new_user!(question))
+      |> LLMChain.run(mode: :while_needs_response)
+
+    # return the LLM's answer
+    ChainResult.to_string!(updated_chain)
+  end
+
+  def make_monster(request) do
+    make_monster =
+      Function.new!(%{
+        name: "make_monster",
+        description: "Stores a record of a monster for future querying",
+        parameters_schema: %{
+          type: "object",
+          properties: %{
+            name: %{
+              type: "string",
+              description: "The name of the monster."
+            },
+            description: %{
+              type: "string",
+              description: "A description of the monster."
+            }
+          },
+          required: ["name", "description"]
+        },
+        function: fn %{"name" => _, "description" => _} = arguments, _context ->
+          case Monsters.create_monster(arguments) do
+            {:ok, %Monster{} = monster} ->
+              {:ok, "Created monster! \n#{Monster.to_llm_string(monster)}"}
+
+            {:error, changeset} ->
+              "Failed to create monster: #{inspect(changeset.errors)}"
+          end
+        end
+      })
+
+    # create and run the chain
+    {:ok, updated_chain} =
+      LLMChain.new!(%{
+        llm: ChatOpenAI.new!()
+        # verbose: true
+      })
+      |> LLMChain.add_tools(make_monster)
+      |> LLMChain.add_messages([
+        Message.new_system!("""
+          You are a helpful assistant who comes up with new monsters and stores them for future queries.
+          If you get an unrelated question or request, politely decline to answer.
+        """),
+        Message.new_user!(request)
+      ])
       |> LLMChain.run(mode: :while_needs_response)
 
     # return the LLM's answer

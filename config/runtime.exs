@@ -9,6 +9,11 @@ import Config
 
 config :langchain, openai_key: System.fetch_env!("OPENAI_API_KEY")
 
+log_level = System.get_env("LOG_LEVEL", "warn")
+            |> String.to_existing_atom()
+
+config :logger, level: log_level
+
 # ## Using releases
 #
 # If you use `mix release`, you need to explicitly enable the server
