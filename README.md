@@ -27,3 +27,9 @@ I asked ChatGPT, and it said that what LangChain does is "tool augmentation or a
 - **Generating a Function Call**: The model outputs a command in a structured format that specifies which function to call and with what parameters.
 - **Executing and Returning Results**: LangChain or your custom middleware intercepts this command, executes the corresponding function, and then provides the output back into the conversation.
 - **Continuing the Dialogue**: The model uses this returned data to inform further responses.
+
+## Learnings, Or, As They Say In The Quaint But Correct Past, Lessons
+
+- LLM APIs may not respond sometimes! Things go badly when they don't.
+- Keeping LLMs on our intended topic requires prompt engineering and may not work.
+- Even when the API responds and the LLM is prompted well, its response quality will vary.

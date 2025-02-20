@@ -12,8 +12,10 @@ defmodule LcDemo.Core do
   alias LcDemo.Monsters
   alias LcDemo.Monsters.Monster
 
+  require Logger
+
   @doc """
-  This is taken from the LangChain docs. It searches the data in a map to answer questions.
+  This is adapted slightly from the LangChain docs. It searches the data in a map to answer questions.
   Eg:
 
      LcDemo.Core.doc_example("where is the hairbrush?")
@@ -28,10 +30,10 @@ defmodule LcDemo.Core do
     # map of data we want to be passed as `context` to the function when
     # executed.
     custom_context = %{
-      "user_id" => 123,
       "hairbrush" => "drawer",
       "dog" => "backyard",
-      "sandwich" => "kitchen"
+      "sandwich" => "kitchen",
+      "Io" => "orbiting Jupiter"
     }
 
     # a custom Elixir function made available to the LLM
@@ -50,8 +52,16 @@ defmodule LcDemo.Core do
           required: ["thing"]
         },
         function: fn %{"thing" => thing} = _arguments, context ->
-          # our context is a pretend item/location location map
+          Logger.debug("Searching the map for #{thing}")
+          # This version can easily fail - if it returns nil, there will be an error
           {:ok, context[thing]}
+
+          # This version is more robust - in case of failure, it gives the LLM a readable
+          # string so it can respond to the user.
+          # case Map.get(context, thing) do
+          #   nil -> {:error, "No information found"}
+          #   info -> {:ok, info}
+          # end
         end
       })
 
