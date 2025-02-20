@@ -9,7 +9,7 @@ import Config
 
 config :langchain, openai_key: System.fetch_env!("OPENAI_API_KEY")
 
-log_level = System.get_env("LOG_LEVEL", "warn")
+log_level = System.get_env("LOG_LEVEL", "warning")
             |> String.to_existing_atom()
 
 config :logger, level: log_level

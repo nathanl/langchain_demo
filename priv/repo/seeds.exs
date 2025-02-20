@@ -33,20 +33,6 @@ monsters_data = [
       "A mysterious creature believed to dwell in Loch Ness, Scotland, often described as a large, serpentine beast."
   },
   %{
-    name: "Chewbacca",
-    description:
-      "A towering Wookiee from Star Wars, known for his strength and loyalty to Han Solo."
-  },
-  %{
-    name: "Darth Vader",
-    description: "A Sith Lord from Star Wars, once a Jedi knight, now encased in black armor."
-  },
-  %{
-    name: "Gollum",
-    description:
-      "A twisted, once-human creature from Lord of the Rings, obsessed with the One Ring."
-  },
-  %{
     name: "Godzilla",
     description:
       "A massive, radioactive monster from Japan, known for rampaging through cities and battling other kaiju. Comes from the sea."
@@ -71,11 +57,6 @@ monsters_data = [
       "A centuries-old vampire, once a prince, now a creature of the night that feeds on blood."
   },
   %{
-    name: "The Invisible Man",
-    description:
-      "A man who becomes invisible, often using his newfound power for villainous deeds."
-  },
-  %{
     name: "Frankenstein's Bride",
     description:
       "The female counterpart to Frankenstein's Monster, brought to life with the same tragic purpose."
@@ -86,23 +67,9 @@ monsters_data = [
       "A legendary sea monster said to drag ships and sailors into the depths of the ocean."
   },
   %{
-    name: "The Phantom of the Opera",
-    description:
-      "A disfigured musical genius who haunts the opera house, seeking love and revenge."
-  },
-  %{
     name: "The Yeti",
     description:
       "A large, ape-like creature that roams the mountains of the Himalayas, often mistaken for Bigfoot."
-  },
-  %{
-    name: "The Babadook",
-    description: "A terrifying entity from a dark children's book, stalking those who fear it."
-  },
-  %{
-    name: "Medusa",
-    description:
-      "A creature from Greek mythology, with snakes for hair and the ability to turn anyone who looks at her into stone."
   },
   %{
     name: "The Chupacabra",
