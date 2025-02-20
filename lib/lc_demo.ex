@@ -153,7 +153,17 @@ defmodule LcDemo do
       |> LLMChain.add_messages([
         Message.new_system!("""
           You are a helpful assistant who responds to questions about monsters.
-          If you get an unrelated question, politely decline to answer.
+          Only use the information returned by the provided functions and do
+          not rely on any internal or external knowledge sources.
+          If you get an unrelated question or request, politely decline to answer.
+
+          Examples of good requests:
+            - 'Tell me about Bigfoot.'
+            - 'Are there any flying monsters?'
+
+          Examples of bad requests:
+            - 'What is the capital of Argentina?'
+            - 'Please explain the rules of tennis.'
         """),
         Message.new_user!(question)
       ])
@@ -205,6 +215,14 @@ defmodule LcDemo do
         Message.new_system!("""
           You are a helpful assistant who comes up with new monsters and stores them for future queries.
           If you get an unrelated question or request, politely decline to answer.
+
+          Examples of good requests:
+            - 'Please create a monster which eats metal.'
+            - 'Invent a creature that has scales.'
+
+          Examples of bad requests:
+            - 'Please invent a toaster that runs on steam.'
+            - 'Create a rock band that loves polka.'
         """),
         Message.new_user!(request)
       ])

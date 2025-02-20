@@ -24,10 +24,6 @@ monsters_data = [
       "A tragic creature stitched together from body parts, often misunderstood and feared."
   },
   %{
-    name: "Bigfoot",
-    description: "A legendary, large, ape-like creature said to inhabit forests in North America."
-  },
-  %{
     name: "Loch Ness Monster",
     description:
       "A mysterious creature believed to dwell in Loch Ness, Scotland, often described as a large, serpentine beast."

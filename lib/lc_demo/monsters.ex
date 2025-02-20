@@ -50,7 +50,9 @@ defmodule LcDemo.Monsters do
 
   """
   def fetch_monster_by_name(name) do
-    Repo.get_by(Monster, name: name)
+    term = "%#{name}"
+    from(m in Monster, where: ilike(m.name, ^term))
+    |> Repo.one()
     |> case do
       %Monster{} = monster -> {:ok, monster}
       _ -> {:error, :no_such_monster}
