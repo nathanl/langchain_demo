@@ -174,6 +174,11 @@ defmodule LcDemo do
     ChainResult.to_string!(updated_chain)
   end
 
+  @doc """
+
+  LcDemo.make_monster("Please make a monster entry for Bigfoot.")
+  "The monster entry for Bigfoot has been created. If you have any more requests or need further information, feel free to ask!"
+  """
   def make_monster(request) do
     make_monster =
       Function.new!(%{

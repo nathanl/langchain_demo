@@ -9,10 +9,13 @@ A demo of using LangChain to let ChatGPT answer questions by calling custom func
 
 ## Usage
 
-Do the above, then run `iex -S mix` and play with:
+Do the above, then run `LOG_LEVEL=debug iex -S mix` and play with:
 
 - `LcDemo.doc_example/1`
 - `LcDemo.monster_query/1`.
+- `LcDemo.make_monster/1`.
+
+Using `LOG_LEVEL=debug` lets you see the database queries it's executing.
 
 ## What Is this Magic?
 
