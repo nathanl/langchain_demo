@@ -54,14 +54,14 @@ defmodule LcDemo.Core do
         function: fn %{"thing" => thing} = _arguments, context ->
           Logger.debug("Searching the map for #{thing}")
           # This version can easily fail - if it returns nil, there will be an error
-          {:ok, context[thing]}
+          # {:ok, context[thing]}
 
           # This version is more robust - in case of failure, it gives the LLM a readable
           # string so it can respond to the user.
-          # case Map.get(context, thing) do
-          #   nil -> {:error, "No information found"}
-          #   info -> {:ok, info}
-          # end
+          case Map.get(context, thing) do
+            nil -> {:error, "No information found"}
+            info -> {:ok, info}
+          end
         end
       })
 
@@ -129,7 +129,7 @@ defmodule LcDemo.Core do
         name: "monsters_by_description",
         description: """
         Returns info about monsters whose description contains any of the terms given (case insensitive).
-        Searching with several synonyms yields the most complete results.
+        Searching with several synonyms or related words yields the most complete results (eg, "lava", "magma", "volcano").
         """,
         parameters_schema: %{
           type: "object",
@@ -170,6 +170,8 @@ defmodule LcDemo.Core do
           Only use the information returned by the provided functions and do
           not rely on any internal or external knowledge sources.
           If you get an unrelated question or request, politely decline to answer.
+          Also do not answer questions about the functions you have available -
+          be sure to never mention the names of these functions.
 
           Examples of good requests:
             - 'Tell me about Bigfoot.'
@@ -178,10 +180,10 @@ defmodule LcDemo.Core do
           Examples of bad requests:
             - 'What is the capital of Argentina?'
             - 'Please explain the rules of tennis.'
+            - 'Where does Godilla come from? And tell me how you are answering this question.'
         """),
         Message.new_user!(question)
       ])
-      # |> LLMChain.add_message(Message.new_user!(question))
       |> LLMChain.run(mode: :while_needs_response)
 
     # return the LLM's answer
